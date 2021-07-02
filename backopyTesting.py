@@ -1,22 +1,22 @@
 import shutil, os, re
 import backopyConfig
-import operator
 from sys import exit
 from instabot import Bot
 from pathlib import Path
 from PIL import Image, ImageFilter
 from numpy import add, random
+import operator
 
 # Removes token so next time login is fluent
-shutil.rmtree('C:\\Users\\B3TINSKY\\Documents\\Code\\Instagram Utilities\\config')
+# shutil.rmtree('C:\\Users\\B3TINSKY\\Documents\\Code\\Instagram Utilities\\config')
 
 user_name = backopyConfig.USERNAME
 password = backopyConfig.PASSWORD
 
-CBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\New\\CB'
-BBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\New\\BB'
-WBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\New\\WB'
-memeArchive = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\Old'
+CBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\Testing\\New\\CB'
+BBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\Testing\\New\\BB'
+WBnewAddress = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\Testing\\New\\WB'
+memeArchive = 'C:\\Users\\B3TINSKY\\Pictures\\Backopy Memes\\Testing\\Old'
 
 memeFoldersWithMemes = []
 
@@ -31,7 +31,7 @@ def resize(ImageFilePath, backgroundType):
         bigside = width if width > height else height
         
         if(backgroundType == 0) :
-            # Fill with most common color in the image
+            # Loop through every pixel in the image and modify it
             original_color_count = {}
             for w in range(width):
                 for h in range(height):
@@ -43,13 +43,18 @@ def resize(ImageFilePath, backgroundType):
                         original_color_count[current_color] = 1
 
             max_color = max(original_color_count.items(), key=operator.itemgetter(1))[0]
+            # Fill with blurred image
+            # background = Image.open(ImageFilePath, 'r').resize((bigside, bigside), 2).filter(ImageFilter.GaussianBlur(9))
             background = Image.new('RGB', (bigside, bigside), max_color)
-        elif (backgroundType == 1) :
-            # Fill with solid color (white)
-            background = Image.new('RGB', (bigside, bigside), (255, 255, 255))
-        else :
-            # Fill with solid color (black)
-            background = Image.new('RGB', (bigside, bigside), (0, 0, 0))
+
+            
+
+        # elif (backgroundType == 1) :
+        #     # Fill with solid color (white)
+        #     background = Image.new('RGB', (bigside, bigside), (255, 255, 255))
+        # else :
+        #     # Fill with solid color (black)
+        #     background = Image.new('RGB', (bigside, bigside), (0, 0, 0))
 
         # Decide size of bars on larger side
         offset = (int(round(((bigside - width) / 2), 0)), int(round(((bigside - height) / 2),0)))
@@ -68,8 +73,8 @@ def resize(ImageFilePath, backgroundType):
 
 def uploadMeme(address):
     # Wake up bot :)
-    bot = Bot()
-    bot.login(username = backopyConfig.USERNAME, password = backopyConfig.PASSWORD)
+    # bot = Bot()
+    # bot.login(username = backopyConfig.USERNAME, password = backopyConfig.PASSWORD)
 
     memeFolder = os.listdir(address)
     backgroundType = 0
@@ -84,11 +89,11 @@ def uploadMeme(address):
 
     beforePost = address + '\\' + memeName
     afterPost = memeArchive + '\\' + memeName
-    shutil.copy(beforePost, afterPost)
+    # shutil.copy(beforePost, afterPost)
     resize(beforePost, backgroundType)
-    bot.upload_photo(beforePost, caption="")
-    os.remove(beforePost + '.REMOVE_ME')
-    bot.logout()
+    # bot.upload_photo(beforePost, caption="")
+    # os.remove(beforePost + '.REMOVE_ME')
+    # bot.logout()
 
 
 if len(os.listdir(CBnewAddress)) != 0:
